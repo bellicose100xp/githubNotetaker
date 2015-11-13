@@ -46,10 +46,10 @@ let styles = StyleSheet.create({
     }
 });
 
-export default class githubNotetaker extends React.Component {
+export default class Main extends React.Component {
     render() {
         return (
-          <View style={styles.mainContainer}>
+          <View>
               <Text>Testing the Router</Text>
           </View>
         );
