@@ -1,6 +1,10 @@
 import React from 'react-native';
 
-let {View, Text, StyleSheet } = React;
+let {
+    View,
+    Text,
+    StyleSheet
+    } = React;
 
 let styles = StyleSheet.create({
     mainContainer: {
@@ -49,10 +53,9 @@ let styles = StyleSheet.create({
 export default class Main extends React.Component {
     render() {
         return (
-          <View>
-              <Text>Testing the Router</Text>
-          </View>
-        );
+            <View style={styles.mainContainer}>
+                <Text> Testing the Router </Text>
+            </View>
+        )
     }
 }
-
