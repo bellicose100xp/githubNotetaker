@@ -1,9 +1,14 @@
 import React from 'react-native';
+import api from '../utils/api';
+import Dashboard from './dashboard';
 
 let {
     View,
     Text,
-    StyleSheet
+    StyleSheet,
+    TextInput,
+    TouchableHighlight,
+    ActivityIndicatorIOS
     } = React;
 
 let styles = StyleSheet.create({
@@ -51,10 +56,64 @@ let styles = StyleSheet.create({
 });
 
 export default class Main extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: '',
+            isLoading: false,
+            error: false
+        }
+    }
+
+    handleChange(event) {
+        this.setState({username: event.nativeEvent.text})
+    }
+
+    handleSubmit() {
+        this.setState({isLoading: true});
+
+        api.getBio(this.state.username)
+            .then(res => {
+               // console.log(res);
+                if (res.message === 'Not Found') {
+                    this.setState({
+                        error: 'User Not Found',
+                        isLoading: false
+                    })
+                } else {
+                    this.props.navigator.push({
+                        title: res.name || 'select an option',
+                        component: Dashboard,
+                        passProps: {userInfo: res}
+
+                    });
+                    this.setState({
+                        isLoading: false,
+                        error: false,
+                        username: ''
+                    })
+                }
+            })
+        //console.log(`SUBMIT: ${this.state.username}`);
+    }
+
     render() {
+        let showErr = this.state.error ? <Text>{this.state.error}</Text> : <View></View>;
         return (
             <View style={styles.mainContainer}>
-                <Text> Testing the Router </Text>
+                <Text style={styles.title}> Search for Github User </Text>
+                <TextInput style={styles.searchInput}
+                           value={this.state.username}
+                           onChange={this.handleChange.bind(this)}/>
+                <TouchableHighlight style={styles.button}
+                                    onPress={this.handleSubmit.bind(this)}
+                                    underlayColor="white">
+                    <Text style={styles.buttonText}> SEARCH </Text>
+                </TouchableHighlight>
+                <ActivityIndicatorIOS animating={this.state.isLoading}
+                color="#111" size="large"/>
+                {showErr}
             </View>
         )
     }
