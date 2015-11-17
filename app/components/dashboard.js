@@ -2,6 +2,7 @@
  * Created by buggy on 11/13/15.
  */
 import React from 'react-native';
+import Profile from './profile';
 
 let {
     Text,
@@ -51,7 +52,11 @@ export default class Dashboard extends React.Component {
     }
 
     goToProfile(){
-        console.log('Going to Profile Page');
+        this.props.navigator.push({
+            component: Profile,
+            title: 'Profile Page',
+            passProps: {userInfo: this.props.userInfo}
+        });
     }
 
     goToRepos(){
