@@ -3,6 +3,7 @@
  */
 import React from 'react-native';
 import Badge from './badge';
+import Separator from '../helpers/separator';
 
 let {Text, View, StyleSheet, ScrollView} = React;
 
@@ -47,6 +48,7 @@ export default class Profile extends React.Component{
                             <Text style={styles.rowTitle}>{this.getRowTitle(item)}</Text>
                             <Text style={styles.rowContent}>{userInfo[item]}</Text>
                         </View>
+                        <Separator />
                     </View>
                 );
             }

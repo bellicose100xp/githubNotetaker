@@ -3,6 +3,7 @@
  */
 import React from 'react-native';
 import Profile from './profile';
+import Repositories from './repositories';
 
 let {
     Text,
@@ -37,7 +38,7 @@ export default class Dashboard extends React.Component {
             flex: 1
         };
 
-        switch(btn){
+        switch (btn) {
             case 0:
                 obj.backgroundColor = '#48BBEC';
                 break;
@@ -51,7 +52,7 @@ export default class Dashboard extends React.Component {
         return obj;
     }
 
-    goToProfile(){
+    goToProfile() {
         this.props.navigator.push({
             component: Profile,
             title: 'Profile Page',
@@ -59,11 +60,15 @@ export default class Dashboard extends React.Component {
         });
     }
 
-    goToRepos(){
-        console.log('Going to Repos Page');
+    goToRepos() {
+        this.props.navigator.push({
+            component: Repositories,
+            title: 'Repositories',
+            passProps: {userInfo: this.props.userInfo}
+        });
     }
 
-    goToNotes(){
+    goToNotes() {
         console.log('Going to Notes Page');
     }
 

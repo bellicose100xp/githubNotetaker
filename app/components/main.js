@@ -1,6 +1,7 @@
 import React from 'react-native';
 import api from '../utils/api';
 import Dashboard from './dashboard';
+import dismissKeyboard from 'react-native/Libraries/Utilities/dismissKeyboard';
 
 let {
     View,
@@ -71,6 +72,9 @@ export default class Main extends React.Component {
     }
 
     handleSubmit() {
+
+        dismissKeyboard();
+
         this.setState({isLoading: true});
 
         api.getBio(this.state.username)
@@ -98,12 +102,18 @@ export default class Main extends React.Component {
         //console.log(`SUBMIT: ${this.state.username}`);
     }
 
+    containerTouched(event) {
+        dismissKeyboard();
+    }
+
     render() {
         let showErr = this.state.error ? <Text>{this.state.error}</Text> : <View></View>;
         return (
-            <View style={styles.mainContainer}>
+            <View style={styles.mainContainer}
+                  onStartShouldSetResponder={this.containerTouched.bind(this)}>
                 <Text style={styles.title}> Search for Github User </Text>
-                <TextInput style={styles.searchInput}
+                <TextInput  ref="textInput"
+                            style={styles.searchInput}
                            value={this.state.username}
                            onChange={this.handleChange.bind(this)}/>
                 <TouchableHighlight style={styles.button}
