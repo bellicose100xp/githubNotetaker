@@ -3,7 +3,7 @@
  */
 import React from 'react-native';
 import Badge from './badge';
-import Separator from '../helpers/separator';
+import Separator from './helpers/separator';
 
 let {Text, View, StyleSheet, ScrollView} = React;
 

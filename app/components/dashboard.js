@@ -4,6 +4,7 @@
 import React from 'react-native';
 import Profile from './profile';
 import Repositories from './repositories';
+import api from '../utils/api';
 
 let {
     Text,
@@ -53,6 +54,8 @@ export default class Dashboard extends React.Component {
     }
 
     goToProfile() {
+
+
         this.props.navigator.push({
             component: Profile,
             title: 'Profile Page',
@@ -61,11 +64,16 @@ export default class Dashboard extends React.Component {
     }
 
     goToRepos() {
-        this.props.navigator.push({
-            component: Repositories,
-            title: 'Repositories',
-            passProps: {userInfo: this.props.userInfo}
-        });
+        api.getRepos(this.props.userInfo.login).then(res => {
+            this.props.navigator.push({
+                component: Repositories,
+                title: 'Repositories',
+                passProps: {
+                    userInfo: this.props.userInfo,
+                    repos: res
+                }
+            });
+        })
     }
 
     goToNotes() {
