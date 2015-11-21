@@ -78,11 +78,19 @@ export default class Dashboard extends React.Component {
     }
 
     goToNotes() {
-        this.props.navigator.push({
-            component: Notes,
-            title: 'Notes',
-            passProps: {user: this.props.userInfo.login}
+
+        api.getNotes(this.props.userInfo.login).then(res => {
+            this.props.navigator.push({
+                component: Notes,
+                title: 'Notes',
+                passProps: {
+                    user: this.props.userInfo.login,
+                    notes: res
+                }
+            })
         })
+
+
     }
 
     render() {
