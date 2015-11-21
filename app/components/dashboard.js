@@ -5,6 +5,7 @@ import React from 'react-native';
 import Profile from './profile';
 import Repositories from './repositories';
 import api from '../utils/api';
+import Notes from './notes';
 
 let {
     Text,
@@ -77,7 +78,11 @@ export default class Dashboard extends React.Component {
     }
 
     goToNotes() {
-        console.log('Going to Notes Page');
+        this.props.navigator.push({
+            component: Notes,
+            title: 'Notes',
+            passProps: {user: this.props.userInfo.login}
+        })
     }
 
     render() {
@@ -106,3 +111,7 @@ export default class Dashboard extends React.Component {
         )
     }
 }
+
+Dashboard.propTypes = {
+    userInfo: React.PropTypes.object.isRequired
+};
