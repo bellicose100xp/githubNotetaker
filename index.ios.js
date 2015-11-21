@@ -1,6 +1,6 @@
 import React from 'react-native';
 import Main from './app/components/main';
-//import Notes from './app/components/notes';
+//import Notes from './app/components/notes'; // Test
 
 let {
     AppRegistry,
@@ -27,13 +27,16 @@ class githubNotetaker extends React.Component {
               component: Main
             }}/>
 
+        // ======== TEST ============
+
         //    <NavigatorIOS
         //        style={styles.container}
         //        initialRoute={{
         //        title: 'Notes',
         //        component: Notes,
-        //        passProps: {user: 'hmason'}
+        //        passProps: {user: 'bellicose100xp', notes:{a: 'first', b: 'second', c: 'third'}}
         //}}/>
+
         );
     }
 }

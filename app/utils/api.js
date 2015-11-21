@@ -21,5 +21,11 @@ export default {
             method: 'post',
             body: JSON.stringify(note)
         }).then(res => res.json());
+    },
+    deleteNote(username, id){
+        let url =  `https://buggy-native-note.firebaseio.com/${username}/${id}.json`;
+        return fetch(url, {
+            method: 'delete'
+        }).then(res => res.json());
     }
 }

@@ -5,12 +5,19 @@ import React from 'react-native';
 import api from '../utils/api';
 import Separator from './helpers/separator';
 
-let {View, ScrollView, ListView, StyleSheet, Text, TextInput, TouchableHighlight} = React;
+let {View,
+    ScrollView,
+    ListView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableHighlight,
+    Dimensions,
+    DeviceEventEmitter}= React;
 
 let styles = StyleSheet.create({
     container: {
         flex: 1
-        //    marginTop: 65
     },
     footerContainer: {
         flexDirection: 'row',
@@ -36,12 +43,12 @@ let styles = StyleSheet.create({
     rowContainer: {
         padding: 5
     },
-    rowText:{
+    rowText: {
         fontSize: 18,
         paddingBottom: 10
     },
-    listView:{
-      flex: 1
+    listView: {
+        flex: 1
     },
     headerContainer: {
         padding: 10,
@@ -53,7 +60,6 @@ let styles = StyleSheet.create({
         alignSelf: 'center',
         color: 'white'
     }
-
 });
 
 export default class Notes extends React.Component {
@@ -63,8 +69,28 @@ export default class Notes extends React.Component {
         this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
             dataSource: this.ds.cloneWithRows(this.props.notes || {}),
-            note: ''
+            note: '',
+            visibleHeight: Dimensions.get('window').height
         }
+    }
+
+    componentDidMount() {
+        this.keyboardShowListener = DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
+        this.keyboardHideListener = DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
+    }
+
+    keyboardWillShow(e) {
+        let newSize = Dimensions.get('window').height - e.endCoordinates.height;
+        this.setState({visibleHeight: newSize})
+    }
+
+    keyboardWillHide(e) {
+        this.setState({visibleHeight: Dimensions.get('window').height})
+    }
+
+    componentWillUnmount() {
+        this.keyboardShowListener.remove();
+        this.keyboardHideListener.remove();
     }
 
     handleChange(event) {
@@ -87,9 +113,11 @@ export default class Notes extends React.Component {
         return (
             <View style={styles.footerContainer}>
                 <TextInput
+                    ref="note"
                     style={styles.searchInput}
                     value={this.state.note}
                     onChange={this.handleChange.bind(this)}
+                    //    onFocus={this.inputFocused.bind(this, 'note')}
                     placeholder="Add New Note"
                 />
                 <TouchableHighlight
@@ -102,10 +130,24 @@ export default class Notes extends React.Component {
         );
     }
 
-    renderRow(rowData) {
+    handleDelete(rowData, sectionID, rowID) {
+       // console.log(`rowData: ${rowData}, sectionID: ${sectionID}, rowID: ${rowID}`);
+        api.deleteNote(this.props.user, rowID).then(() => {
+            api.getNotes(this.props.user)
+                .then(res => {
+                    this.setState({dataSource: this.ds.cloneWithRows(res || {})})
+                })
+        })
+    }
+
+    renderRow(rowData, sectionID, rowID) {
         return (
             <View style={styles.rowContainer}>
-                <Text style={styles.rowText}>{rowData}</Text>
+                <TouchableHighlight
+                    onPress={this.handleDelete.bind(this, rowData, sectionID, rowID)}
+                    underlayColor="transparent">
+                    <Text style={styles.rowText}>{rowData}</Text>
+                </TouchableHighlight>
                 <Separator />
             </View>
         )
@@ -119,11 +161,9 @@ export default class Notes extends React.Component {
         )
     }
 
-
     render() {
-       // console.log(this.props.notes);
         return (
-            <ScrollView style={styles.container}>
+            <View style={{height: this.state.visibleHeight}}>
                 <ListView
                     style={styles.listView}
                     dataSource={this.state.dataSource}
@@ -131,7 +171,7 @@ export default class Notes extends React.Component {
                     renderHeader={this.renderHeader.bind(this)}
                 />
                 {this.footer()}
-            </ScrollView>
+            </View>
         );
     }
 }
