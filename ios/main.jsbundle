@@ -892,6 +892,17 @@ component:_appComponentsMain2.default}}));}}]);return githubNotetaker;})(_reactN
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 AppRegistry.registerComponent('githubNotetaker',function(){return githubNotetaker;});
 });
 __d('react-native/Libraries/react-native/react-native.js',function(global, require, module, exports) {  'use strict';
@@ -53786,7 +53797,8 @@ module.exports = findDOMNode;
 });
 __d('githubNotetaker/app/components/main.js',function(global, require, module, exports) {  Object.defineProperty(exports,'__esModule',{value:true});var _createClass=(function(){function defineProperties(target,props){for(var i=0;i < props.length;i++) {var descriptor=props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if('value' in descriptor)descriptor.writable = true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};})();var _get=function get(object,property,receiver){if(object === null)object = Function.prototype;var desc=Object.getOwnPropertyDescriptor(object,property);if(desc === undefined){var parent=Object.getPrototypeOf(object);if(parent === null){return undefined;}else {return get(parent,property,receiver);}}else if('value' in desc){return desc.value;}else {var getter=desc.get;if(getter === undefined){return undefined;}return getter.call(receiver);}};function _interopRequireDefault(obj){return obj && obj.__esModule?obj:{'default':obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError('Cannot call a class as a function');}}function _inherits(subClass,superClass){if(typeof superClass !== 'function' && superClass !== null){throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__ = superClass;}var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=_interopRequireDefault(_reactNative);var _utilsApi=require(
 'githubNotetaker/app/utils/api.js');var _utilsApi2=_interopRequireDefault(_utilsApi);var _dashboard=require(
-'githubNotetaker/app/components/dashboard.js');var _dashboard2=_interopRequireDefault(_dashboard);var 
+'githubNotetaker/app/components/dashboard.js');var _dashboard2=_interopRequireDefault(_dashboard);var _reactNativeLibrariesUtilitiesDismissKeyboard=require(
+'dismissKeyboard');var _reactNativeLibrariesUtilitiesDismissKeyboard2=_interopRequireDefault(_reactNativeLibrariesUtilitiesDismissKeyboard);var 
 
 
 View=_reactNative2.default.View;var 
@@ -53857,6 +53869,9 @@ this.setState({username:event.nativeEvent.text});}},{key:'handleSubmit',value:
 
 
 function handleSubmit(){var _this=this;
+
+(0,_reactNativeLibrariesUtilitiesDismissKeyboard2.default)();
+
 this.setState({isLoading:true});
 
 _utilsApi2.default.getBio(this.state.username).
@@ -53877,19 +53892,25 @@ passProps:{userInfo:res}});
 _this.setState({
 isLoading:false,
 error:false,
-username:''});}});}},{key:'render',value:
+username:''});}});}},{key:'containerTouched',value:
 
 
 
 
+
+
+function containerTouched(event){
+(0,_reactNativeLibrariesUtilitiesDismissKeyboard2.default)();}},{key:'render',value:
 
 
 function render(){
 var showErr=this.state.error?_reactNative2.default.createElement(Text,null,this.state.error):_reactNative2.default.createElement(View,null);
 return (
-_reactNative2.default.createElement(View,{style:styles.mainContainer},
+_reactNative2.default.createElement(View,{style:styles.mainContainer,
+onStartShouldSetResponder:this.containerTouched.bind(this)},
 _reactNative2.default.createElement(Text,{style:styles.title},' Search for Github User '),
-_reactNative2.default.createElement(TextInput,{style:styles.searchInput,
+_reactNative2.default.createElement(TextInput,{ref:'textInput',
+style:styles.searchInput,
 value:this.state.username,
 onChange:this.handleChange.bind(this)}),
 _reactNative2.default.createElement(TouchableHighlight,{style:styles.button,
@@ -53901,22 +53922,44 @@ _reactNative2.default.createElement(ActivityIndicatorIOS,{animating:this.state.i
 color:'#111',size:'large'}),
 showErr));}}]);return Main;})(_reactNative2.default.Component);exports.default = Main;module.exports = exports.default;
 });
-__d('githubNotetaker/app/utils/api.js',function(global, require, module, exports) {  Object.defineProperty(exports,"__esModule",{value:true});exports.default = {
+__d('githubNotetaker/app/utils/api.js',function(global, require, module, exports) {  Object.defineProperty(exports,'__esModule',{value:true});exports.default = {
 getBio:function(username){
 username = username.toLowerCase().trim();
-var url="https://api.github.com/users/" + username;
+var url='https://api.github.com/users/' + username;
 return fetch(url).then(function(res){return res.json();});},
 
 getRepos:function(username){
 username = username.toLowerCase().trim();
-var url="https://api.github.com/users/" + username + "/repos";
-return fetch(url).then(function(res){return res.json();});}};module.exports = exports.default;
+var url='https://api.github.com/users/' + username + '/repos';
+return fetch(url).then(function(res){return res.json();});},
+
+getNotes:function(username){
+username = username.toLowerCase().trim();
+var url='https://buggy-native-note.firebaseio.com/' + username + '.json';
+return fetch(url).then(function(res){return res.json();});},
+
+addNote:function(username,note){
+username = username.toLowerCase().trim();
+var url='https://buggy-native-note.firebaseio.com/' + username + '.json';
+return fetch(url,{
+method:'post',
+body:JSON.stringify(note)}).
+then(function(res){return res.json();});},
+
+deleteNote:function(username,id){
+var url='https://buggy-native-note.firebaseio.com/' + username + '/' + id + '.json';
+return fetch(url,{
+method:'delete'}).
+then(function(res){return res.json();});}};module.exports = exports.default;
 });
 __d('githubNotetaker/app/components/dashboard.js',function(global, require, module, exports) {  Object.defineProperty(exports,'__esModule',{value:true});var _createClass=(function(){function defineProperties(target,props){for(var i=0;i < props.length;i++) {var descriptor=props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if('value' in descriptor)descriptor.writable = true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};})();var _get=function get(object,property,receiver){if(object === null)object = Function.prototype;var desc=Object.getOwnPropertyDescriptor(object,property);if(desc === undefined){var parent=Object.getPrototypeOf(object);if(parent === null){return undefined;}else {return get(parent,property,receiver);}}else if('value' in desc){return desc.value;}else {var getter=desc.get;if(getter === undefined){return undefined;}return getter.call(receiver);}};function _interopRequireDefault(obj){return obj && obj.__esModule?obj:{'default':obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError('Cannot call a class as a function');}}function _inherits(subClass,superClass){if(typeof superClass !== 'function' && superClass !== null){throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__ = superClass;}var _reactNative=require(
 
 
 'react-native/Libraries/react-native/react-native.js');var _reactNative2=_interopRequireDefault(_reactNative);var _profile=require(
-'githubNotetaker/app/components/profile.js');var _profile2=_interopRequireDefault(_profile);var 
+'githubNotetaker/app/components/profile.js');var _profile2=_interopRequireDefault(_profile);var _repositories=require(
+'githubNotetaker/app/components/repositories.js');var _repositories2=_interopRequireDefault(_repositories);var _utilsApi=require(
+'githubNotetaker/app/utils/api.js');var _utilsApi2=_interopRequireDefault(_utilsApi);var _notes=require(
+'githubNotetaker/app/components/notes.js');var _notes2=_interopRequireDefault(_notes);var 
 
 
 Text=_reactNative2.default.Text;var 
@@ -53966,6 +54009,8 @@ return obj;}},{key:'goToProfile',value:
 
 
 function goToProfile(){
+
+
 this.props.navigator.push({
 component:_profile2.default,
 title:'Profile Page',
@@ -53973,12 +54018,33 @@ passProps:{userInfo:this.props.userInfo}});}},{key:'goToRepos',value:
 
 
 
-function goToRepos(){
-console.log('Going to Repos Page');}},{key:'goToNotes',value:
+function goToRepos(){var _this=this;
+_utilsApi2.default.getRepos(this.props.userInfo.login).then(function(res){
+_this.props.navigator.push({
+component:_repositories2.default,
+title:'Repositories',
+passProps:{
+userInfo:_this.props.userInfo,
+repos:res}});});}},{key:'goToNotes',value:
 
 
-function goToNotes(){
-console.log('Going to Notes Page');}},{key:'render',value:
+
+
+
+function goToNotes(){var _this2=this;
+
+_utilsApi2.default.getNotes(this.props.userInfo.login).then(function(res){
+_this2.props.navigator.push({
+component:_notes2.default,
+title:'Notes',
+passProps:{
+user:_this2.props.userInfo.login,
+notes:res}});});}},{key:'render',value:
+
+
+
+
+
 
 
 function render(){
@@ -54001,14 +54067,22 @@ _reactNative2.default.createElement(TouchableHighlight,{
 style:this.makeBackground(2),
 onPress:this.goToNotes.bind(this),
 underlayColor:'#88D4F5'},
-_reactNative2.default.createElement(Text,{style:styles.buttonText},'View Notes'))));}}]);return Dashboard;})(_reactNative2.default.Component);exports.default = Dashboard;module.exports = exports.default;
+_reactNative2.default.createElement(Text,{style:styles.buttonText},'View Notes'))));}}]);return Dashboard;})(_reactNative2.default.Component);exports.default = Dashboard;
+
+
+
+
+
+
+Dashboard.propTypes = {
+userInfo:_reactNative2.default.PropTypes.object.isRequired};module.exports = exports.default;
 });
 __d('githubNotetaker/app/components/profile.js',function(global, require, module, exports) {  Object.defineProperty(exports,'__esModule',{value:true});var _createClass=(function(){function defineProperties(target,props){for(var i=0;i < props.length;i++) {var descriptor=props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if('value' in descriptor)descriptor.writable = true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};})();var _get=function get(object,property,receiver){if(object === null)object = Function.prototype;var desc=Object.getOwnPropertyDescriptor(object,property);if(desc === undefined){var parent=Object.getPrototypeOf(object);if(parent === null){return undefined;}else {return get(parent,property,receiver);}}else if('value' in desc){return desc.value;}else {var getter=desc.get;if(getter === undefined){return undefined;}return getter.call(receiver);}};function _interopRequireDefault(obj){return obj && obj.__esModule?obj:{'default':obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError('Cannot call a class as a function');}}function _inherits(subClass,superClass){if(typeof superClass !== 'function' && superClass !== null){throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__ = superClass;}var _reactNative=require(
 
 
 'react-native/Libraries/react-native/react-native.js');var _reactNative2=_interopRequireDefault(_reactNative);var _badge=require(
-'githubNotetaker/app/components/badge.js');var _badge2=_interopRequireDefault(_badge);var _helpersSeparater=require(
-'githubNotetaker/app/helpers/separater.js');var _helpersSeparater2=_interopRequireDefault(_helpersSeparater);var 
+'githubNotetaker/app/components/badge.js');var _badge2=_interopRequireDefault(_badge);var _helpersSeparator=require(
+'githubNotetaker/app/components/helpers/separator.js');var _helpersSeparator2=_interopRequireDefault(_helpersSeparator);var 
 
 Text=_reactNative2.default.Text;var View=_reactNative2.default.View;var StyleSheet=_reactNative2.default.StyleSheet;var ScrollView=_reactNative2.default.ScrollView;
 
@@ -54053,7 +54127,7 @@ _reactNative2.default.createElement(View,{style:styles.rowContainer},
 _reactNative2.default.createElement(Text,{style:styles.rowTitle},_this.getRowTitle(item)),
 _reactNative2.default.createElement(Text,{style:styles.rowContent},userInfo[item])),
 
-_reactNative2.default.createElement(_helpersSeparater2.default,null)));}});
+_reactNative2.default.createElement(_helpersSeparator2.default,null)));}});
 
 
 
@@ -54118,7 +54192,7 @@ _reactNative2.default.createElement(Text,{style:styles.handle},this.props.userIn
 Badge.propTypes = {
 userInfo:_reactNative2.default.PropTypes.object.isRequired};module.exports = exports.default;
 });
-__d('githubNotetaker/app/helpers/separater.js',function(global, require, module, exports) {  Object.defineProperty(exports,'__esModule',{value:true});var _createClass=(function(){function defineProperties(target,props){for(var i=0;i < props.length;i++) {var descriptor=props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if('value' in descriptor)descriptor.writable = true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};})();var _get=function get(object,property,receiver){if(object === null)object = Function.prototype;var desc=Object.getOwnPropertyDescriptor(object,property);if(desc === undefined){var parent=Object.getPrototypeOf(object);if(parent === null){return undefined;}else {return get(parent,property,receiver);}}else if('value' in desc){return desc.value;}else {var getter=desc.get;if(getter === undefined){return undefined;}return getter.call(receiver);}};function _interopRequireDefault(obj){return obj && obj.__esModule?obj:{'default':obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError('Cannot call a class as a function');}}function _inherits(subClass,superClass){if(typeof superClass !== 'function' && superClass !== null){throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__ = superClass;}var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=_interopRequireDefault(_reactNative);var 
+__d('githubNotetaker/app/components/helpers/separator.js',function(global, require, module, exports) {  Object.defineProperty(exports,'__esModule',{value:true});var _createClass=(function(){function defineProperties(target,props){for(var i=0;i < props.length;i++) {var descriptor=props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if('value' in descriptor)descriptor.writable = true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};})();var _get=function get(object,property,receiver){if(object === null)object = Function.prototype;var desc=Object.getOwnPropertyDescriptor(object,property);if(desc === undefined){var parent=Object.getPrototypeOf(object);if(parent === null){return undefined;}else {return get(parent,property,receiver);}}else if('value' in desc){return desc.value;}else {var getter=desc.get;if(getter === undefined){return undefined;}return getter.call(receiver);}};function _interopRequireDefault(obj){return obj && obj.__esModule?obj:{'default':obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError('Cannot call a class as a function');}}function _inherits(subClass,superClass){if(typeof superClass !== 'function' && superClass !== null){throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__ = superClass;}var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=_interopRequireDefault(_reactNative);var 
 
 View=_reactNative2.default.View;var StyleSheet=_reactNative2.default.StyleSheet;
 
@@ -54135,5 +54209,295 @@ Separator=(function(_React$Component){_inherits(Separator,_React$Component);func
 function render(){
 return _reactNative2.default.createElement(View,{style:styles.separator});}}]);return Separator;})(_reactNative2.default.Component);exports.default = Separator;module.exports = exports.default;
 });
+__d('githubNotetaker/app/components/repositories.js',function(global, require, module, exports) {  Object.defineProperty(exports,'__esModule',{value:true});var _createClass=(function(){function defineProperties(target,props){for(var i=0;i < props.length;i++) {var descriptor=props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if('value' in descriptor)descriptor.writable = true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};})();var _get=function get(object,property,receiver){if(object === null)object = Function.prototype;var desc=Object.getOwnPropertyDescriptor(object,property);if(desc === undefined){var parent=Object.getPrototypeOf(object);if(parent === null){return undefined;}else {return get(parent,property,receiver);}}else if('value' in desc){return desc.value;}else {var getter=desc.get;if(getter === undefined){return undefined;}return getter.call(receiver);}};function _interopRequireDefault(obj){return obj && obj.__esModule?obj:{'default':obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError('Cannot call a class as a function');}}function _inherits(subClass,superClass){if(typeof superClass !== 'function' && superClass !== null){throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__ = superClass;}var _reactNative=require(
+
+
+'react-native/Libraries/react-native/react-native.js');var _reactNative2=_interopRequireDefault(_reactNative);var _badge=require(
+'githubNotetaker/app/components/badge.js');var _badge2=_interopRequireDefault(_badge);var _helpersSeparator=require(
+'githubNotetaker/app/components/helpers/separator.js');var _helpersSeparator2=_interopRequireDefault(_helpersSeparator);var _helpersWebView=require(
+'githubNotetaker/app/components/helpers/webView.js');var _helpersWebView2=_interopRequireDefault(_helpersWebView);var 
+
+Text=_reactNative2.default.Text;var View=_reactNative2.default.View;var ScrollView=_reactNative2.default.ScrollView;var TouchableHighlight=_reactNative2.default.TouchableHighlight;var StyleSheet=_reactNative2.default.StyleSheet;
+
+var styles=StyleSheet.create({
+container:{
+flex:1},
+
+rowContainer:{
+flexDirection:'column',
+flex:1,
+padding:10},
+
+name:{
+color:'#48BBEC',
+fontSize:18,
+paddingLeft:-5,
+paddingBottom:3},
+
+stars:{
+color:'salmon',
+fontSize:14,
+paddingBottom:5},
+
+description:{
+fontSize:14,
+paddingBottom:5}});var 
+
+
+
+
+Repositories=(function(_React$Component){_inherits(Repositories,_React$Component);function Repositories(){_classCallCheck(this,Repositories);_get(Object.getPrototypeOf(Repositories.prototype),'constructor',this).apply(this,arguments);}_createClass(Repositories,[{key:'openPage',value:
+function openPage(url){
+console.log(url);
+this.props.navigator.push({
+component:_helpersWebView2.default,
+title:'Github Page',
+passProps:{url:url}});}},{key:'render',value:
+
+
+function render(){var _this=this;
+var repos=this.props.repos;
+var list=repos.map(function(item,index){
+var desc=item.description?_reactNative2.default.createElement(Text,{style:styles.description},item.description):_reactNative2.default.createElement(View,null);
+return (
+_reactNative2.default.createElement(View,{key:index},
+_reactNative2.default.createElement(View,{style:styles.rowContainer},
+_reactNative2.default.createElement(TouchableHighlight,{
+onPress:_this.openPage.bind(_this,item.html_url),
+underlayColor:'transparent'},
+
+_reactNative2.default.createElement(Text,{style:styles.name},' ',item.name)),
+
+_reactNative2.default.createElement(Text,{style:styles.stars},'Stars: ',item.stargazers_count),
+desc),
+
+_reactNative2.default.createElement(_helpersSeparator2.default,null)));});
+
+
+
+
+return (
+_reactNative2.default.createElement(ScrollView,{styles:styles.container},
+_reactNative2.default.createElement(_badge2.default,{userInfo:this.props.userInfo}),
+list));}}]);return Repositories;})(_reactNative2.default.Component);exports.default = Repositories;
+
+
+
+
+
+Repositories.propTypes = {
+userInfo:_reactNative2.default.PropTypes.object.isRequired,
+repos:_reactNative2.default.PropTypes.array.isRequired};module.exports = exports.default;
+});
+__d('githubNotetaker/app/components/helpers/webView.js',function(global, require, module, exports) {  Object.defineProperty(exports,'__esModule',{value:true});var _createClass=(function(){function defineProperties(target,props){for(var i=0;i < props.length;i++) {var descriptor=props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if('value' in descriptor)descriptor.writable = true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};})();var _get=function get(object,property,receiver){if(object === null)object = Function.prototype;var desc=Object.getOwnPropertyDescriptor(object,property);if(desc === undefined){var parent=Object.getPrototypeOf(object);if(parent === null){return undefined;}else {return get(parent,property,receiver);}}else if('value' in desc){return desc.value;}else {var getter=desc.get;if(getter === undefined){return undefined;}return getter.call(receiver);}};function _interopRequireDefault(obj){return obj && obj.__esModule?obj:{'default':obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError('Cannot call a class as a function');}}function _inherits(subClass,superClass){if(typeof superClass !== 'function' && superClass !== null){throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__ = superClass;}var _reactNative=require(
+
+
+'react-native/Libraries/react-native/react-native.js');var _reactNative2=_interopRequireDefault(_reactNative);var 
+
+View=_reactNative2.default.View;var WebView=_reactNative2.default.WebView;var StyleSheet=_reactNative2.default.StyleSheet;
+
+var styles=StyleSheet.create({
+container:{
+flex:1,
+backgroundColor:'#F6F6EF',
+flexDirection:'column'}});var 
+
+
+
+WebViewer=(function(_React$Component){_inherits(WebViewer,_React$Component);function WebViewer(){_classCallCheck(this,WebViewer);_get(Object.getPrototypeOf(WebViewer.prototype),'constructor',this).apply(this,arguments);}_createClass(WebViewer,[{key:'render',value:
+function render(){
+return (
+_reactNative2.default.createElement(View,{style:styles.container},
+_reactNative2.default.createElement(WebView,{url:this.props.url})));}}]);return WebViewer;})(_reactNative2.default.Component);exports.default = WebViewer;
+
+
+
+
+
+WebViewer.propTypes = {
+url:_reactNative2.default.PropTypes.string.isRequired};module.exports = exports.default;
+});
+__d('githubNotetaker/app/components/notes.js',function(global, require, module, exports) {  Object.defineProperty(exports,'__esModule',{value:true});var _createClass=(function(){function defineProperties(target,props){for(var i=0;i < props.length;i++) {var descriptor=props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if('value' in descriptor)descriptor.writable = true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};})();var _get=function get(object,property,receiver){if(object === null)object = Function.prototype;var desc=Object.getOwnPropertyDescriptor(object,property);if(desc === undefined){var parent=Object.getPrototypeOf(object);if(parent === null){return undefined;}else {return get(parent,property,receiver);}}else if('value' in desc){return desc.value;}else {var getter=desc.get;if(getter === undefined){return undefined;}return getter.call(receiver);}};function _interopRequireDefault(obj){return obj && obj.__esModule?obj:{'default':obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError('Cannot call a class as a function');}}function _inherits(subClass,superClass){if(typeof superClass !== 'function' && superClass !== null){throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__ = superClass;}var _reactNative=require(
+
+
+'react-native/Libraries/react-native/react-native.js');var _reactNative2=_interopRequireDefault(_reactNative);var _utilsApi=require(
+'githubNotetaker/app/utils/api.js');var _utilsApi2=_interopRequireDefault(_utilsApi);var _helpersSeparator=require(
+'githubNotetaker/app/components/helpers/separator.js');var _helpersSeparator2=_interopRequireDefault(_helpersSeparator);var 
+
+View=_reactNative2.default.View;var 
+ScrollView=_reactNative2.default.ScrollView;var 
+ListView=_reactNative2.default.ListView;var 
+StyleSheet=_reactNative2.default.StyleSheet;var 
+Text=_reactNative2.default.Text;var 
+TextInput=_reactNative2.default.TextInput;var 
+TouchableHighlight=_reactNative2.default.TouchableHighlight;var 
+Dimensions=_reactNative2.default.Dimensions;var 
+DeviceEventEmitter=_reactNative2.default.DeviceEventEmitter;
+
+var styles=StyleSheet.create({
+container:{
+flex:1},
+
+footerContainer:{
+flexDirection:'row',
+backgroundColor:'#e3e3e3'},
+
+button:{
+height:60,
+backgroundColor:'#48BBEC',
+flex:3,
+alignItems:'center',
+justifyContent:'center'},
+
+buttonText:{
+fontSize:18},
+
+searchInput:{
+height:60,
+padding:10,
+fontSize:18,
+color:'#111',
+flex:10},
+
+rowContainer:{
+padding:5},
+
+rowText:{
+fontSize:18,
+paddingBottom:10},
+
+listView:{
+flex:1},
+
+headerContainer:{
+padding:10,
+alignItems:'stretch',
+backgroundColor:'tomato'},
+
+headerText:{
+fontSize:24,
+alignSelf:'center',
+color:'white'}});var 
+
+
+
+Notes=(function(_React$Component){_inherits(Notes,_React$Component);
+
+function Notes(props){_classCallCheck(this,Notes);
+_get(Object.getPrototypeOf(Notes.prototype),'constructor',this).call(this,props);
+this.ds = new ListView.DataSource({rowHasChanged:function(r1,r2){return r1 !== r2;}});
+this.state = {
+dataSource:this.ds.cloneWithRows(this.props.notes || {}),
+note:'',
+visibleHeight:Dimensions.get('window').height};}_createClass(Notes,[{key:'componentDidMount',value:
+
+
+
+function componentDidMount(){
+this.keyboardShowListener = DeviceEventEmitter.addListener('keyboardWillShow',this.keyboardWillShow.bind(this));
+this.keyboardHideListener = DeviceEventEmitter.addListener('keyboardWillHide',this.keyboardWillHide.bind(this));}},{key:'keyboardWillShow',value:
+
+
+function keyboardWillShow(e){
+var newSize=Dimensions.get('window').height - e.endCoordinates.height;
+this.setState({visibleHeight:newSize});}},{key:'keyboardWillHide',value:
+
+
+function keyboardWillHide(e){
+this.setState({visibleHeight:Dimensions.get('window').height});}},{key:'componentWillUnmount',value:
+
+
+function componentWillUnmount(){
+this.keyboardShowListener.remove();
+this.keyboardHideListener.remove();}},{key:'handleChange',value:
+
+
+function handleChange(event){
+this.setState({note:event.nativeEvent.text});}},{key:'handleSubmit',value:
+
+
+function handleSubmit(){var _this=this;
+var note=this.state.note;
+this.setState({note:''});
+_utilsApi2.default.addNote(this.props.user,note).
+then(function(){
+_utilsApi2.default.getNotes(_this.props.user).
+then(function(res){
+_this.setState({dataSource:_this.ds.cloneWithRows(res || {})});});});}},{key:'footer',value:
+
+
+
+
+function footer(){
+return (
+_reactNative2.default.createElement(View,{style:styles.footerContainer},
+_reactNative2.default.createElement(TextInput,{
+ref:'note',
+style:styles.searchInput,
+value:this.state.note,
+onChange:this.handleChange.bind(this),
+
+placeholder:'Add New Note'}),
+
+_reactNative2.default.createElement(TouchableHighlight,{
+style:styles.button,
+onPress:this.handleSubmit.bind(this),
+underlayColor:'transparent'},
+_reactNative2.default.createElement(Text,{style:styles.buttonText},'Submit'))));}},{key:'handleDelete',value:
+
+
+
+
+
+function handleDelete(rowData,sectionID,rowID){var _this2=this;
+
+_utilsApi2.default.deleteNote(this.props.user,rowID).then(function(){
+_utilsApi2.default.getNotes(_this2.props.user).
+then(function(res){
+_this2.setState({dataSource:_this2.ds.cloneWithRows(res || {})});});});}},{key:'renderRow',value:
+
+
+
+
+function renderRow(rowData,sectionID,rowID){
+return (
+_reactNative2.default.createElement(View,{style:styles.rowContainer},
+_reactNative2.default.createElement(TouchableHighlight,{
+onPress:this.handleDelete.bind(this,rowData,sectionID,rowID),
+underlayColor:'transparent'},
+_reactNative2.default.createElement(Text,{style:styles.rowText},rowData)),
+
+_reactNative2.default.createElement(_helpersSeparator2.default,null)));}},{key:'renderHeader',value:
+
+
+
+
+function renderHeader(){
+return (
+_reactNative2.default.createElement(View,{style:styles.headerContainer},
+_reactNative2.default.createElement(Text,{style:styles.headerText},'My notes for ',this.props.user)));}},{key:'render',value:
+
+
+
+
+function render(){
+return (
+_reactNative2.default.createElement(View,{style:{height:this.state.visibleHeight}},
+_reactNative2.default.createElement(ListView,{
+style:styles.listView,
+dataSource:this.state.dataSource,
+renderRow:this.renderRow.bind(this),
+renderHeader:this.renderHeader.bind(this)}),
+
+this.footer()));}}]);return Notes;})(_reactNative2.default.Component);exports.default = Notes;
+
+
+
+
+
+Notes.propType = {
+notes:_reactNative2.default.PropTypes.object.isRequired,
+user:_reactNative2.default.PropTypes.string.isRequired};module.exports = exports.default;
+});
 ;require("githubNotetaker/index.ios.js");
-__SSTOKENSTRING = "@generated SignedSource<<c3d9954c1300626290d72ccb9277934f>>";
+__SSTOKENSTRING = "@generated SignedSource<<aa4f02d128c8d52b757d9ec34af318b9>>";
